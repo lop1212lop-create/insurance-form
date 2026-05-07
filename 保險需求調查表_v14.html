@@ -1,0 +1,1362 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>保險需求調查表</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+<style>
+:root{
+  --bg:#ffffff;--bg2:#fafbfc;--bg3:#f5f6f8;
+  --text:#111827;--text2:#374151;--text3:#6b7280;
+  --border:#e8ebf0;--border2:#d3d8e0;--border3:#e8ebf0;
+  --blue-bg:#eff6ff;--blue:#1e5fa5;--blue-dark:#0d3e6f;--blue-light:#b5d4f4;
+  --green:#1D9E75;--green-light:#9FE1CB;--green-bg:#F0FDF4;
+  --accent:#d4a574;
+  --shadow-sm:0 1px 2px rgba(26,35,50,0.04);
+  --shadow-md:0 2px 8px rgba(26,35,50,0.06);
+  --shadow-lg:0 4px 16px rgba(26,35,50,0.08);
+  --radius:12px;--radius-sm:8px;
+}
+@media(prefers-color-scheme:dark){
+  :root{
+    --bg:#1a1f2e;--bg2:#242938;--bg3:#2d3344;
+    --text:#e8ebf0;--text2:#a8b0c0;--text3:#6b7589;
+    --border:#3a4052;--border2:#4a5064;--border3:#3a4052;
+    --shadow-sm:0 1px 2px rgba(0,0,0,0.2);
+    --shadow-md:0 2px 8px rgba(0,0,0,0.25);
+    --shadow-lg:0 4px 16px rgba(0,0,0,0.3);
+  }
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{
+  font-family:'Noto Sans TC',-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang TC',sans-serif;
+  background:linear-gradient(180deg,#f0f4f9 0%,#e8edf4 100%);
+  color:var(--text);
+  min-height:100vh;
+  padding:32px 16px 48px;
+  font-weight:400;
+  letter-spacing:0.01em;
+  -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
+}
+@media(prefers-color-scheme:dark){
+  body{background:linear-gradient(180deg,#1a1f2e 0%,#242938 100%);}
+}
+.page{max-width:760px;margin:0 auto;}
+.page-header{margin-bottom:28px;text-align:center;padding:8px 0 4px;}
+.page-header .brand-mark{display:inline-block;font-family:'Playfair Display',serif;font-size:11px;letter-spacing:6px;color:var(--accent);text-transform:uppercase;margin-bottom:8px;font-weight:600;}
+.page-header h1{font-size:26px;font-weight:600;color:var(--text);margin-bottom:6px;letter-spacing:0.02em;}
+.page-header .divider{width:40px;height:2px;background:var(--accent);margin:10px auto;}
+.page-header p{font-size:13px;color:var(--text2);line-height:1.7;}
+
+.mode-banner{padding:12px 16px;border-radius:var(--radius-sm);margin-bottom:20px;font-size:13px;font-weight:500;display:none;align-items:center;gap:10px;background:linear-gradient(135deg,#eaf3de,#d8ebc8);color:#2d5508;border:1px solid #C0DD97;box-shadow:var(--shadow-sm);}
+.mode-banner.show{display:flex;}
+
+.card{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:24px;
+  margin-bottom:16px;
+  box-shadow:var(--shadow-sm);
+  transition:box-shadow 0.2s;
+}
+.card:hover{box-shadow:var(--shadow-md);}
+.section-title{
+  font-size:15px;
+  font-weight:600;
+  color:var(--text);
+  margin-bottom:16px;
+  padding-bottom:12px;
+  border-bottom:1px solid var(--border);
+  display:flex;
+  align-items:center;
+  gap:10px;
+  letter-spacing:0.02em;
+}
+.section-title::before{
+  content:'';
+  width:3px;
+  height:14px;
+  background:var(--accent);
+  border-radius:2px;
+}
+.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:480px){.info-grid{grid-template-columns:1fr;}}
+.info-field label{display:block;font-size:12px;color:var(--text2);margin-bottom:6px;font-weight:500;letter-spacing:0.02em;}
+.info-field input,.info-field select{
+  width:100%;padding:10px 12px;
+  border:1px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--text);
+  font-size:14px;font-family:inherit;font-weight:400;
+  outline:none;transition:all 0.15s;
+}
+.info-field input:focus,.info-field select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(30,95,165,0.1);
+}
+.info-field input::placeholder{color:var(--text3);}
+
+/* 問卷 — 重新設計 */
+.survey-card{
+  background:linear-gradient(135deg,#ffffff 0%,#fafbfc 100%);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:16px;
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+}
+@media(prefers-color-scheme:dark){
+  .survey-card{background:linear-gradient(135deg,var(--bg) 0%,var(--bg2) 100%);}
+}
+.survey-header{
+  padding:18px 22px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;user-select:none;
+  background:var(--bg);
+  transition:background 0.15s;
+}
+.survey-header:hover{background:var(--bg2);}
+.survey-icon-wrap{
+  width:38px;height:38px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#fff3e0,#ffe0b2);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;
+}
+.survey-header h3{font-size:15px;font-weight:600;color:var(--text);margin-bottom:2px;letter-spacing:0.02em;}
+.survey-header .subtitle{font-size:12px;color:var(--text3);font-weight:400;}
+.survey-body{padding:22px;}
+.survey-section{margin-bottom:22px;}
+.survey-section:last-child{margin-bottom:0;}
+.survey-section-title{
+  font-size:12px;
+  font-weight:600;
+  color:var(--blue);
+  margin-bottom:12px;
+  letter-spacing:0.08em;
+  text-transform:uppercase;
+  display:flex;align-items:center;gap:8px;
+}
+.survey-section-title::after{
+  content:'';flex:1;height:1px;
+  background:linear-gradient(90deg,var(--border) 0%,transparent 100%);
+}
+.survey-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+@media(max-width:480px){.survey-grid{grid-template-columns:1fr;}}
+.survey-field{position:relative;}
+.survey-field label{
+  display:block;font-size:12px;color:var(--text2);
+  margin-bottom:6px;font-weight:500;letter-spacing:0.02em;
+}
+.survey-field input,.survey-field select{
+  width:100%;padding:10px 12px;
+  border:1px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--text);
+  font-size:14px;font-family:inherit;
+  outline:none;transition:all 0.15s;
+}
+.survey-field input:focus,.survey-field select:focus{
+  border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(30,95,165,0.1);
+}
+.survey-field input::placeholder{color:var(--text3);}
+.survey-field.full{grid-column:1/-1;}
+
+.check-group{display:flex;flex-wrap:wrap;gap:8px;margin-top:4px;}
+.check-pill{
+  display:inline-flex;align-items:center;gap:6px;
+  padding:8px 14px;
+  border:1px solid var(--border2);
+  border-radius:999px;
+  font-size:13px;
+  cursor:pointer;user-select:none;
+  color:var(--text2);
+  background:var(--bg);
+  transition:all 0.15s;
+  font-weight:400;
+}
+.check-pill:hover{
+  border-color:var(--blue);
+  color:var(--blue);
+  background:var(--blue-bg);
+}
+.check-pill input[type=checkbox]{width:14px;height:14px;cursor:pointer;accent-color:var(--blue);}
+.check-pill.active{
+  border-color:var(--blue);
+  background:var(--blue-bg);
+  color:var(--blue-dark);
+  font-weight:500;
+}
+
+.rec-preview{
+  background:linear-gradient(135deg,#f8fafc,#eef4fa);
+  border:1px solid #d4e3f5;
+  border-radius:var(--radius-sm);
+  padding:16px 18px;
+  margin-top:20px;
+  display:none;
+}
+@media(prefers-color-scheme:dark){
+  .rec-preview{background:linear-gradient(135deg,#1e2a3e,#243348);border-color:#2c3e55;}
+}
+.rec-preview-title{
+  font-size:12px;
+  color:var(--blue);
+  margin-bottom:12px;
+  font-weight:600;
+  letter-spacing:0.05em;
+  display:flex;align-items:center;gap:6px;
+}
+.rec-row{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  padding:10px 0;
+  border-bottom:1px dashed var(--border);
+}
+.rec-row:last-child{border-bottom:none;padding-bottom:0;}
+.rec-row:first-child{padding-top:0;}
+.rec-name{font-size:13px;color:var(--text);font-weight:500;}
+.rec-sub{font-size:11px;color:var(--text3);margin-top:3px;font-weight:400;}
+.rec-val{
+  font-size:14px;font-weight:600;color:var(--blue);
+  white-space:nowrap;margin-left:12px;
+  font-variant-numeric:tabular-nums;
+}
+
+/* 圖例 */
+.legend{
+  display:flex;gap:18px;margin-bottom:16px;
+  padding:14px 18px;
+  background:var(--bg);
+  border-radius:var(--radius-sm);
+  flex-wrap:wrap;
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-sm);
+}
+.legend-item{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--text2);font-weight:500;}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0;box-shadow:0 0 0 2px var(--bg);}
+
+/* 六大險種 */
+.cats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:16px;}
+@media(max-width:480px){.cats{grid-template-columns:repeat(2,1fr);}}
+.cat-card{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:18px 14px;
+  cursor:pointer;
+  background:var(--bg);
+  transition:all 0.2s;
+  user-select:none;
+  box-shadow:var(--shadow-sm);
+}
+.cat-card:hover{
+  border-color:var(--border2);
+  transform:translateY(-1px);
+  box-shadow:var(--shadow-md);
+}
+.cat-icon{font-size:26px;margin-bottom:10px;display:block;}
+.cat-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:0.02em;}
+.cat-hint{font-size:11px;color:var(--text3);line-height:1.5;}
+.cat-badge{
+  display:inline-block;margin-top:8px;
+  font-size:11px;padding:3px 10px;
+  border-radius:999px;font-weight:500;
+}
+
+.panel{
+  background:var(--bg);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:14px;
+  overflow:hidden;
+  box-shadow:var(--shadow-sm);
+}
+.panel-header{
+  padding:16px 20px;
+  border-bottom:1px solid var(--border);
+  display:flex;align-items:center;gap:12px;
+  background:var(--bg2);
+}
+.panel-title{font-size:16px;font-weight:600;color:var(--text);letter-spacing:0.02em;}
+.panel-close{
+  margin-left:auto;font-size:22px;cursor:pointer;
+  color:var(--text2);padding:2px 10px;
+  border-radius:6px;transition:all 0.15s;
+  line-height:1;
+}
+.panel-close:hover{background:var(--bg3);color:var(--text);}
+.items{padding:14px 20px;display:flex;flex-direction:column;gap:12px;}
+.item{
+  border:1px solid var(--border);
+  border-radius:var(--radius-sm);
+  overflow:hidden;
+  cursor:pointer;
+  transition:all 0.15s;
+}
+.item:hover{border-color:var(--border2);}
+.item.sel{
+  border-color:var(--blue);border-width:2px;
+  box-shadow:0 0 0 3px rgba(30,95,165,0.08);
+}
+.item-top{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;}
+.item-check{
+  width:18px;height:18px;
+  border:1.5px solid var(--border2);
+  border-radius:5px;flex-shrink:0;margin-top:2px;
+  display:flex;align-items:center;justify-content:center;
+  transition:all 0.15s;
+}
+.item.sel .item-check{background:var(--blue);border-color:var(--blue);}
+.ck{display:none;width:10px;height:6px;border-left:2px solid #fff;border-bottom:2px solid #fff;transform:rotate(-45deg) translateY(-1px);}
+.item.sel .ck{display:block;}
+.item-name{font-size:14px;font-weight:600;color:var(--text);margin-bottom:4px;letter-spacing:0.02em;}
+.item.sel .item-name{color:var(--blue-dark);}
+.item-desc{font-size:12.5px;color:var(--text2);line-height:1.7;}
+.item-eg{
+  margin-top:8px;font-size:11.5px;
+  color:var(--text3);
+  background:var(--bg2);
+  border-radius:6px;
+  padding:6px 10px;line-height:1.6;
+  border-left:2px solid var(--border2);
+}
+.item.sel .item-eg{background:var(--blue-bg);color:var(--blue);border-left-color:var(--blue);}
+.tracks-block{display:none;border-top:1px solid var(--border);background:var(--bg2);padding:16px;}
+.item.sel .tracks-block{display:block;}
+.track-row{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
+.track-row:last-child{margin-bottom:0;}
+.track-label{font-size:11px;font-weight:600;width:68px;flex-shrink:0;line-height:1.3;letter-spacing:0.02em;}
+.track-right{flex:1;min-width:0;}
+.track-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:3px;}
+.track-val{font-size:13px;font-weight:600;font-variant-numeric:tabular-nums;}
+.bar-outer{height:7px;border-radius:4px;background:var(--border);position:relative;overflow:visible;}
+.bar-fill{height:7px;border-radius:4px;position:absolute;left:0;top:0;max-width:100%;pointer-events:none;transition:width 0.3s;}
+input[type=range].sl{-webkit-appearance:none;appearance:none;width:100%;height:7px;background:transparent;position:absolute;left:0;top:0;margin:0;padding:0;cursor:pointer;}
+input[type=range].sl::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;margin-top:-5.5px;border:2px solid var(--bg);box-shadow:var(--shadow-md);}
+input[type=range].sl::-moz-range-thumb{width:20px;height:20px;border-radius:50%;border:3px solid var(--bg);box-shadow:var(--shadow-md);}
+input[type=range].sl-exp::-webkit-slider-thumb{background:var(--green);}
+input[type=range].sl-exp::-moz-range-thumb{background:var(--green);}
+.exist-input{
+  width:92px;padding:5px 9px;
+  border:1px solid var(--border2);
+  border-radius:6px;
+  font-size:13px;font-family:inherit;
+  background:var(--bg);color:var(--text);
+  text-align:right;outline:none;
+  font-variant-numeric:tabular-nums;
+  transition:all 0.15s;
+}
+.exist-input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,95,165,0.1);}
+.exist-unit{font-size:12px;color:var(--text2);white-space:nowrap;font-weight:500;}
+.divider-thin{height:1px;background:var(--border);margin:8px 0 14px;}
+.note-row{padding:0 20px 16px;}
+.note-row label{font-size:12px;color:var(--text2);display:block;margin-bottom:6px;font-weight:500;}
+.note-row textarea{
+  width:100%;min-height:56px;resize:vertical;
+  font-size:13px;font-family:inherit;
+  padding:10px 12px;
+  border:1px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--text);
+  outline:none;transition:all 0.15s;
+  line-height:1.6;
+}
+.note-row textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,95,165,0.1);}
+
+/* 被動收入 */
+.passive-card{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  margin-bottom:16px;overflow:hidden;
+  background:linear-gradient(135deg,#ffffff,#f0fdf4);
+  box-shadow:var(--shadow-sm);
+}
+@media(prefers-color-scheme:dark){
+  .passive-card{background:linear-gradient(135deg,var(--bg),#1f3a2f);}
+}
+.passive-header{
+  padding:18px 22px;
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;user-select:none;
+  transition:background 0.15s;
+}
+.passive-icon-wrap{
+  width:40px;height:40px;
+  border-radius:10px;
+  background:linear-gradient(135deg,#9fe1cb,#1d9e75);
+  display:flex;align-items:center;justify-content:center;
+  font-size:20px;
+}
+.passive-body{display:none;padding:20px 22px 22px;border-top:1px solid var(--border);}
+.passive-body.open{display:block;}
+.passive-desc{
+  font-size:13.5px;color:var(--text2);line-height:1.8;
+  margin-bottom:20px;padding:14px 16px;
+  background:var(--bg);
+  border-radius:var(--radius-sm);
+  border-left:3px solid var(--green);
+}
+.passive-bar{height:10px;border-radius:5px;background:var(--border);position:relative;margin-bottom:6px;}
+.passive-fill{height:10px;border-radius:5px;background:linear-gradient(90deg,#9fe1cb,#1d9e75);position:absolute;left:0;top:0;pointer-events:none;transition:width 0.3s;}
+input[type=range].sl-passive{-webkit-appearance:none;appearance:none;width:100%;height:10px;background:transparent;position:absolute;left:0;top:0;margin:0;padding:0;cursor:pointer;}
+input[type=range].sl-passive::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;margin-top:-6px;border:3px solid var(--bg);background:var(--green);box-shadow:var(--shadow-md);}
+input[type=range].sl-passive::-moz-range-thumb{width:22px;height:22px;border-radius:50%;border:3px solid var(--bg);background:var(--green);box-shadow:var(--shadow-md);}
+.passive-ticks{display:flex;justify-content:space-between;margin-top:6px;}
+.passive-tick{font-size:10px;color:var(--text3);font-variant-numeric:tabular-nums;}
+
+.general-card{
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  padding:20px 22px;margin-bottom:16px;
+  background:var(--bg);
+  box-shadow:var(--shadow-sm);
+}
+.general-card label{
+  font-size:14px;font-weight:600;
+  color:var(--text);display:block;
+  margin-bottom:10px;letter-spacing:0.02em;
+}
+.general-card textarea{
+  width:100%;min-height:70px;resize:vertical;
+  font-size:13px;font-family:inherit;
+  padding:10px 12px;line-height:1.7;
+  border:1px solid var(--border2);
+  border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--text);
+  outline:none;transition:all 0.15s;
+}
+.general-card textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(30,95,165,0.1);}
+
+.share-card{
+  border:2px solid var(--blue);
+  border-radius:var(--radius);
+  padding:18px 22px;margin-bottom:18px;
+  background:linear-gradient(135deg,#eff6ff,#dbeafe);
+  display:none;
+  box-shadow:var(--shadow-md);
+}
+@media(prefers-color-scheme:dark){.share-card{background:linear-gradient(135deg,#1e2a3e,#1a2847);}}
+.share-card-title{font-size:14px;font-weight:600;color:var(--blue-dark);margin-bottom:12px;letter-spacing:0.02em;}
+.share-steps{display:flex;gap:8px;margin-bottom:14px;flex-wrap:wrap;}
+.share-step{
+  font-size:11px;color:var(--blue);
+  background:var(--bg);
+  padding:4px 10px;border-radius:999px;
+  border:1px solid var(--blue-light);font-weight:500;
+}
+.share-url-wrap{display:flex;gap:10px;align-items:flex-start;}
+.share-url{
+  flex:1;padding:10px 12px;
+  border:1px solid var(--blue-light);
+  border-radius:var(--radius-sm);
+  font-size:12px;font-family:'SF Mono',Monaco,monospace;
+  background:var(--bg);color:var(--text2);
+  word-break:break-all;line-height:1.6;min-height:40px;
+}
+.btn-copy{
+  padding:10px 18px;font-size:13px;font-weight:500;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--radius-sm);
+  cursor:pointer;white-space:nowrap;flex-shrink:0;
+  font-family:inherit;transition:all 0.15s;
+  box-shadow:var(--shadow-sm);
+}
+.btn-copy:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.btn-copy.copied{background:var(--green);}
+
+/* 操作列 */
+.action-row{
+  display:flex;gap:12px;align-items:center;flex-wrap:wrap;
+  padding:20px;
+  background:var(--bg);
+  border-radius:var(--radius);
+  border:1px solid var(--border);
+  box-shadow:var(--shadow-sm);
+  margin-top:8px;
+}
+.btn-p{
+  padding:12px 26px;font-size:14px;font-weight:600;
+  background:var(--text);color:var(--bg);
+  border:none;border-radius:var(--radius-sm);
+  cursor:pointer;font-family:inherit;
+  transition:all 0.15s;letter-spacing:0.02em;
+  box-shadow:var(--shadow-sm);
+}
+.btn-p:hover{opacity:0.9;transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.btn-share{
+  padding:12px 20px;font-size:13px;font-weight:600;
+  background:var(--blue);color:#fff;
+  border:none;border-radius:var(--radius-sm);
+  cursor:pointer;font-family:inherit;
+  transition:all 0.15s;letter-spacing:0.02em;
+  box-shadow:var(--shadow-sm);
+}
+.btn-share:hover{background:var(--blue-dark);transform:translateY(-1px);box-shadow:var(--shadow-md);}
+.btn-drive{
+  padding:12px 20px;font-size:13px;font-weight:600;
+  background:linear-gradient(135deg,#4285F4,#34A853);color:#fff;
+  border:none;border-radius:var(--radius-sm);
+  cursor:pointer;font-family:inherit;
+  transition:all 0.15s;letter-spacing:0.02em;
+  box-shadow:var(--shadow-sm);
+}
+.btn-drive:hover{transform:translateY(-1px);box-shadow:var(--shadow-md);filter:brightness(1.05);}
+.btn-s{
+  padding:11px 18px;font-size:13px;cursor:pointer;
+  font-family:inherit;border-radius:var(--radius-sm);
+  background:var(--bg);color:var(--text2);
+  border:1px solid var(--border2);
+  transition:all 0.15s;font-weight:500;
+}
+.btn-s:hover{background:var(--bg2);color:var(--text);}
+.sel-count{margin-left:auto;font-size:13px;color:var(--text2);font-weight:500;}
+.sel-count span{font-weight:700;color:var(--text);font-variant-numeric:tabular-nums;}
+
+.toast{
+  position:fixed;bottom:28px;left:50%;
+  transform:translateX(-50%);
+  background:var(--text);color:var(--bg);
+  padding:12px 22px;border-radius:10px;
+  font-size:13px;opacity:0;pointer-events:none;
+  transition:opacity 0.2s;z-index:9999;white-space:nowrap;
+  font-weight:500;box-shadow:var(--shadow-lg);
+}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+<div class="page">
+  <div class="page-header">
+    <div class="agent-header">
+      <div class="agent-logo-wrap">
+        <img src="data:image/png;base64,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" alt="承鼎通訊處" class="agent-logo"/>
+      </div>
+      <div class="agent-info">
+        <div class="agent-name">TOMMY</div>
+        <div class="agent-title">藍色湯姆貓　|　保險顧問</div>
+        <div class="agent-slogan">用大傘，撐起不可控的風險</div>
+      </div>
+    </div>
+    <div class="divider-gold"></div>
+    <h1>保險需求調查表</h1>
+    <p>填寫基本資料與需求評估後，點選各險種勾選所需項目<br>並調整期望額度，最後匯出 PDF。</p>
+  </div>
+
+  <div class="mode-banner" id="client-banner">✅ 業務員已為您預填資料，請確認並調整您的期望額度後匯出 PDF。</div>
+
+  <!-- 個人資料 -->
+  <div class="card">
+    <div class="section-title">個人基本資料</div>
+    <div class="info-grid">
+      <div class="info-field"><label>姓名</label><input type="text" id="f-name" placeholder="請輸入姓名"/></div>
+      <div class="info-field"><label>性別</label>
+        <select id="f-gender"><option value="">請選擇</option><option value="男">男</option><option value="女">女</option><option value="不提供">不提供</option></select>
+      </div>
+      <div class="info-field"><label>出生年月日</label><input type="date" id="f-birth"/></div>
+      <div class="info-field"><label>Line ID</label><input type="text" id="f-line" placeholder="請輸入 Line ID"/></div>
+      <div class="info-field"><label>聯絡電話</label><input type="tel" id="f-phone" placeholder="0912-345-678"/></div>
+      <div class="info-field"><label>電子郵件</label><input type="email" id="f-email" placeholder="email@example.com"/></div>
+    </div>
+  </div>
+
+  <!-- 需求評估問卷 -->
+  <div class="survey-card">
+    <div class="survey-header" onclick="toggleSurvey()">
+      <div class="survey-icon-wrap">📋</div>
+      <div>
+        <h3>需求評估問卷</h3>
+        <div class="subtitle">自行決定是否填寫，詳細填寫可帶入建議額度</div>
+      </div>
+      <span id="survey-arrow" style="margin-left:auto;font-size:16px;color:var(--text2);transition:transform 0.2s;transform:rotate(-90deg);">▾</span>
+    </div>
+    <div class="survey-body" id="survey-body" style="display:none;">
+
+      <div class="survey-section">
+        <div class="survey-section-title">家庭狀況</div>
+        <div class="survey-grid">
+          <div class="survey-field">
+            <label>婚姻狀況</label>
+            <select id="sq-marry" onchange="calcRec()"><option value="">請選擇</option><option value="單身">單身</option><option value="已婚">已婚</option></select>
+          </div>
+          <div class="survey-field">
+            <label>子女數</label>
+            <select id="sq-child" onchange="calcRec()"><option value="0">無</option><option value="1">1 位</option><option value="2">2 位</option><option value="3">3 位以上</option></select>
+          </div>
+          <div class="survey-field">
+            <label>居住地區</label>
+            <select id="sq-region" onchange="calcRec()"><option value="">請選擇</option><option value="north">北部</option><option value="middle">中部</option><option value="south">南部</option></select>
+          </div>
+        </div>
+      </div>
+
+      <div class="survey-section">
+        <div class="survey-section-title">收入</div>
+        <div class="survey-grid">
+          <div class="survey-field">
+            <label>個人年所得（萬元）</label>
+            <input type="number" id="sq-income" min="0" placeholder="例：80" oninput="calcRec()"/>
+          </div>
+          <div class="survey-field">
+            <label>家庭年所得（萬元）</label>
+            <input type="number" id="sq-family-income" min="0" placeholder="例：150" oninput="calcRec()"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="survey-section">
+        <div class="survey-section-title">資產</div>
+        <div class="survey-grid">
+          <div class="survey-field">
+            <label>現金存款（萬元）</label>
+            <input type="number" id="sq-cash" min="0" placeholder="0" oninput="calcRec()"/>
+          </div>
+          <div class="survey-field">
+            <label>股票 / 基金（萬元）</label>
+            <input type="number" id="sq-stock" min="0" placeholder="0" oninput="calcRec()"/>
+          </div>
+          <div class="survey-field full">
+            <label>不動產估值（萬元）</label>
+            <input type="number" id="sq-property" min="0" placeholder="0" oninput="calcRec()"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="survey-section">
+        <div class="survey-section-title">負債</div>
+        <div class="survey-grid">
+          <div class="survey-field">
+            <label>信用貸款（萬元）</label>
+            <input type="number" id="sq-loan-credit" min="0" placeholder="0" oninput="calcRec()"/>
+          </div>
+          <div class="survey-field">
+            <label>房屋貸款（萬元）</label>
+            <input type="number" id="sq-loan-house" min="0" placeholder="0" oninput="calcRec()"/>
+          </div>
+          <div class="survey-field">
+            <label>車貸（萬元）</label>
+            <input type="number" id="sq-loan-car" min="0" placeholder="0" oninput="calcRec()"/>
+          </div>
+          <div class="survey-field">
+            <label>其他貸款（萬元）</label>
+            <input type="number" id="sq-loan-other" min="0" placeholder="0" oninput="calcRec()"/>
+          </div>
+        </div>
+      </div>
+
+      <div class="survey-section">
+        <div class="survey-section-title">生活支出</div>
+        <div class="survey-grid">
+          <div class="survey-field">
+            <label>每月固定開銷（元）</label>
+            <input type="number" id="sq-monthly-expense" min="0" placeholder="例：50000" oninput="calcRec()"/>
+          </div>
+        </div>
+
+        <div class="survey-section-title">健康狀況</div>
+        <div class="survey-grid">
+          <div class="survey-field full">
+            <label>家族病史（可複選）</label>
+            <div class="check-group">
+              <label class="check-pill"><input type="checkbox" value="心血管" onchange="syncPill(this);calcRec()"/>心血管疾病</label>
+              <label class="check-pill"><input type="checkbox" value="癌症" onchange="syncPill(this);calcRec()"/>癌症</label>
+              <label class="check-pill"><input type="checkbox" value="糖尿病" onchange="syncPill(this);calcRec()"/>糖尿病</label>
+              <label class="check-pill"><input type="checkbox" value="腦血管" onchange="syncPill(this);calcRec()"/>腦血管疾病</label>
+              <label class="check-pill"><input type="checkbox" value="失智" onchange="syncPill(this);calcRec()"/>失智症</label>
+              <label class="check-pill"><input type="checkbox" value="無" onchange="syncPill(this);calcRec()"/>無</label>
+            </div>
+          </div>
+          <div class="survey-field full">
+            <label>目前體況（可複選）</label>
+            <div class="check-group">
+              <label class="check-pill"><input type="checkbox" value="高血壓" onchange="syncPill(this);calcRec()"/>高血壓</label>
+              <label class="check-pill"><input type="checkbox" value="高血脂" onchange="syncPill(this);calcRec()"/>高血脂</label>
+              <label class="check-pill"><input type="checkbox" value="高血糖" onchange="syncPill(this);calcRec()"/>高血糖</label>
+              <label class="check-pill"><input type="checkbox" value="糖尿病" onchange="syncPill(this);calcRec()"/>糖尿病</label>
+              <label class="check-pill"><input type="checkbox" value="正常" onchange="syncPill(this);calcRec()"/>正常，無異常</label>
+            </div>
+          </div>
+          <div class="survey-field full">
+            <label>未來擔心的病症（可複選）</label>
+            <div class="check-group">
+              <label class="check-pill"><input type="checkbox" value="癌症" onchange="syncPill(this);calcRec()"/>癌症</label>
+              <label class="check-pill"><input type="checkbox" value="心臟病" onchange="syncPill(this);calcRec()"/>心臟病</label>
+              <label class="check-pill"><input type="checkbox" value="腦中風" onchange="syncPill(this);calcRec()"/>腦中風</label>
+              <label class="check-pill"><input type="checkbox" value="失能" onchange="syncPill(this);calcRec()"/>失能</label>
+              <label class="check-pill"><input type="checkbox" value="失智長照" onchange="syncPill(this);calcRec()"/>失智 / 長照</label>
+              <label class="check-pill"><input type="checkbox" value="其他" onchange="syncPill(this);calcRec()"/>其他</label>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="rec-preview" id="rec-preview">
+        <div class="rec-preview-title">📊 系統建議額度（依您填寫的資料計算）</div>
+        <div id="rec-preview-rows"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 圖例 -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#888780;"></div>已有保障（以建議額度為滿格）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#185FA5;"></div>建議額度（依問卷自動更新）</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#1D9E75;"></div>期望額度（客戶調整）</div>
+  </div>
+
+  <!-- 六大險種 -->
+  <div class="cats" id="cats"></div>
+  <div id="panel-area"></div>
+
+  <!-- 期許被動收入 -->
+  <div class="passive-card">
+    <div class="passive-header" onclick="togglePassive()">
+      <div class="passive-icon-wrap">💰</div>
+      <div>
+        <div style="font-size:15px;font-weight:600;color:var(--text);letter-spacing:0.02em;">期許被動收入</div>
+        <div style="font-size:12px;color:var(--text3);margin-top:3px;">讓生活越過越輕鬆，無論風雨都有一筆安心錢</div>
+      </div>
+      <div style="margin-left:auto;display:flex;align-items:center;gap:10px;">
+        <span id="passive-badge" style="font-size:12px;color:var(--text3);">點擊展開</span>
+        <span id="passive-arrow" style="font-size:14px;color:var(--text2);transition:transform 0.2s;">▸</span>
+      </div>
+    </div>
+    <div class="passive-body" id="passive-body">
+      <div class="passive-desc">每個月希望從保險中額外領到一筆固定收入，不管發生什麼事，這筆錢都穩穩入帳，讓生活多一份底氣與從容。</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
+        <span style="font-size:13px;color:var(--text2);">每月期望金額</span>
+        <div><span style="font-size:22px;font-weight:500;color:var(--green);" id="passive-val">0</span><span style="font-size:13px;color:var(--text2);margin-left:4px;">元／月</span></div>
+      </div>
+      <div class="passive-bar">
+        <div class="passive-fill" id="passive-fill" style="width:0%;"></div>
+        <input type="range" class="sl-passive" min="0" max="10" step="1" value="0" id="passive-slider" onclick="stopP(event)" oninput="onPassive(this.value)">
+      </div>
+      <div class="passive-ticks">
+        <span class="passive-tick">0</span><span class="passive-tick">1萬</span><span class="passive-tick">2萬</span><span class="passive-tick">3萬</span><span class="passive-tick">4萬</span><span class="passive-tick">5萬</span><span class="passive-tick">6萬</span><span class="passive-tick">7萬</span><span class="passive-tick">8萬</span><span class="passive-tick">9萬</span><span class="passive-tick">10萬</span>
+      </div>
+      <div style="margin-top:14px;">
+        <label style="font-size:12px;color:var(--text2);display:block;margin-bottom:4px;">備註</label>
+        <textarea id="passive-note" style="width:100%;min-height:44px;resize:vertical;font-size:12px;font-family:inherit;padding:7px 9px;border:0.5px solid var(--border2);border-radius:var(--radius-sm);background:var(--bg);color:var(--text);outline:none;" placeholder="例：希望退休後每月有 3 萬的穩定收入..."></textarea>
+      </div>
+    </div>
+  </div>
+
+  <!-- 整體備註 -->
+  <div class="general-card">
+    <label>整體備註與預算</label>
+    <textarea id="note-general" placeholder="例：月預算約 5,000 元，優先醫療與癌症，目前已有公司團保..."></textarea>
+  </div>
+
+  <!-- 分享連結 -->
+  <div class="share-card" id="share-card">
+    <div class="share-card-title">🔗 分享連結已產生</div>
+    <div class="share-steps">
+      <span class="share-step">1. 複製下方連結</span>
+      <span class="share-step">2. 傳給客戶</span>
+      <span class="share-step">3. 客戶開啟後資料自動帶入</span>
+    </div>
+    <div class="share-url-wrap">
+      <div class="share-url" id="share-url-text">—</div>
+      <button class="btn-copy" id="btn-copy" onclick="copyLink()">複製</button>
+    </div>
+  </div>
+
+  <!-- 操作列 -->
+  <div class="action-row">
+    <button class="btn-s" onclick="clearAll()">清除所有選項</button>
+    <button class="btn-share" onclick="generateLink()">🔗 產生分享連結</button>
+    <div class="sel-count">已選 <span id="cnt">0</span> 項</div>
+    <button class="btn-p" onclick="exportPDF()">匯出 PDF ↓</button>
+    <button class="btn-drive" onclick="submitToAgent()">📮 送出給業務員</button>
+  </div>
+</div>
+
+<!-- 頁尾署名 -->
+<div style="text-align:center;padding:20px 0 4px;font-size:12px;color:var(--text3);border-top:1px solid var(--border);margin-top:8px;">
+  本表由 <strong style="color:var(--text2);">TOMMY・藍色湯姆貓</strong> 專業規劃　｜　用大傘，撐起不可控的風險
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════ 送出到業務員 ═══════════
+const APPS_SCRIPT_URL='https://script.google.com/macros/s/AKfycbw9MancU3kocnZnM9c3qQDrXtSS_YRDpRiuFGztLsXCGDGEPheRuun98qr7G8SCOfhoNQ/exec';
+
+async function submitToAgent(){
+  const nameEl=document.getElementById('f-name');
+  if(!nameEl.value.trim()){showToast('請先填寫姓名');nameEl.focus();return;}
+  showToast('準備送出資料...');
+
+  const name=nameEl.value;
+  const gender=document.getElementById('f-gender').value||'';
+  const birth=document.getElementById('f-birth').value||'';
+  const lineId=document.getElementById('f-line').value||'';
+  const phone=document.getElementById('f-phone').value||'';
+  const email=document.getElementById('f-email').value||'';
+  const genNote=document.getElementById('note-general').value;
+  const passiveAmount=parseInt(document.getElementById('passive-slider').value)*10000;
+  const passiveNote=document.getElementById('passive-note').value;
+  const today=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+  const marry=document.getElementById('sq-marry').value;
+  const child=document.getElementById('sq-child').value;
+  const regionMap={north:'北部',middle:'中部',south:'南部'};
+  const region=regionMap[document.getElementById('sq-region').value]||'';
+  const income=getNum('sq-income');
+  const totalAsset=getNum('sq-cash')+getNum('sq-stock')+getNum('sq-property');
+  const totalDebt=getNum('sq-loan-credit')+getNum('sq-loan-house')+getNum('sq-loan-car')+getNum('sq-loan-other');
+
+  const sections=[];
+  CATS.forEach(c=>{
+    const items=c.items.filter(i=>selected.has(i.id)).map(item=>{
+      const eIdx2=expVals[item.id]!=null?expVals[item.id]:recIdxFn(item);
+      const eVal=item.steps[eIdx2],rVal=recVal(item),exVal=existVals[item.id]||0;
+      const noteEl=document.getElementById('note-'+c.id);
+      return {name:item.name,existing:exVal?fmtNum(exVal,item.unit):'尚無',recommend:fmtNum(rVal,item.unit),expect:fmtNum(eVal,item.unit)};
+    });
+    const noteEl=document.getElementById('note-'+c.id);
+    if(items.length>0){
+      sections.push({catName:c.name,items,note:noteEl?noteEl.value:''});
+    }
+  });
+
+  const payload={
+    filename:'保險需求調查表_'+name+'_'+today,
+    clientInfo:{name,gender,birth,lineId,phone,email},
+    survey:{marry,child,region,income:income?income+'萬':'',totalAsset:totalAsset?totalAsset+'萬':'',totalDebt:totalDebt?totalDebt+'萬':'',monthlyExpense:getNum('sq-monthly-expense')?getNum('sq-monthly-expense').toLocaleString()+' 元':''},
+    sections,
+    passive:passiveAmount>0?passiveAmount.toLocaleString()+' 元／月':'尚未設定',
+    passiveNote,
+    genNote,
+    submitDate:today
+  };
+
+  showToast('上傳中，請稍候...');
+  try{
+    await fetch(APPS_SCRIPT_URL,{
+      method:'POST',
+      mode:'no-cors',
+      headers:{'Content-Type':'text/plain;charset=utf-8'},
+      body:JSON.stringify(payload)
+    });
+    showSuccessBanner();
+  }catch(e){
+    console.error(e);
+    showToast('送出失敗，請稍後再試');
+  }
+}
+
+
+
+
+
+function showSuccessBanner(){
+  const existing=document.getElementById('success-banner');
+  if(existing)existing.remove();
+  const div=document.createElement('div');
+  div.id='success-banner';
+  div.style.cssText='position:fixed;top:0;left:0;right:0;background:linear-gradient(135deg,#1D9E75,#0F6E56);color:#fff;padding:20px 24px;box-shadow:0 4px 16px rgba(0,0,0,0.15);z-index:9999;display:flex;align-items:center;justify-content:center;gap:12px;font-weight:500;font-size:15px;text-align:center;flex-wrap:wrap;';
+  div.innerHTML='<span style="font-size:22px;">✅</span><span>您的資料已成功送出給業務員，感謝您的填寫！</span><button onclick="document.getElementById(\'success-banner\').remove()" style="margin-left:12px;padding:6px 14px;background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:6px;cursor:pointer;font-size:13px;font-family:inherit;">關閉</button>';
+  document.body.prepend(div);
+  showToast('✅ 送出成功！');
+}
+
+
+// ═══════════ 原本功能 ═══════════
+const CATS=[
+  {id:'life',name:'壽險',icon:'🛡️',hint:'最基本的身故保障',color:'#EAF3DE',openColor:'#3B6D11',
+   items:[{id:'life-basic',name:'壽險（身故／全殘）',desc:'人走了之後，留給家人一筆錢，照護父母小孩、維持生活或還清房貸。',eg:'例：家中經濟支柱突然過世，壽險保額一次給付，讓家人維持原有生活水準。',unit:'萬元',steps:[100,200,300,500,800,1000,1500,2000],rec:4}]},
+  {id:'accident',name:'意外險',icon:'⚡',hint:'突發事故的專屬保障',color:'#E6F1FB',openColor:'#185FA5',
+   items:[
+    {id:'acc-death',name:'意外身故',desc:'因意外（非生病）造成死亡，額外給付一筆理賠金。',eg:'例：騎車被撞身亡，可再領一筆意外身故保險金，補充壽險保障。',unit:'萬元',steps:[100,200,300,500,800,1000,1500,2000],rec:0},
+    {id:'acc-expense',name:'意外實支實付',desc:'意外受傷後的醫療費用，花多少賠多少（非生病，例如車禍或跌倒扭傷）。',eg:'例：跌倒骨折開刀，手術、住院、藥費統統可申請理賠。',unit:'萬元',steps:[5,10,15,20,30,50,100],rec:1},
+    {id:'acc-hosp',name:'意外住院日額',desc:'因意外住院，每住一天補貼固定金額，彌補收入損失。',eg:'例：車禍住院 10 天，每天補貼 2,000 元，共可領 20,000 元。',unit:'元／天',steps:[500,1000,1500,2000,3000,5000],rec:3},
+    {id:'acc-dis-lump',name:'意外失能一次金',desc:'因意外導致身體功能永久喪失，確認失能等級後一次給付理賠金。',eg:'例：車禍造成下肢截肢，確認重度失能後一次給付 300 萬，用於復健或生活重建。',unit:'萬元',steps:[50,100,200,300,500],rec:3},
+    {id:'acc-dis-month',name:'意外失能月扶金',desc:'因意外失能後，每個月定期領取生活補貼，彌補無法工作的收入缺口，建議額度為每月固定開銷。',eg:'例：每月固定開銷 5 萬元，失能後每月領 5 萬元，維持原有生活水準。',unit:'元／月',steps:[10000,20000,30000,40000,50000,60000,80000,100000],rec:4}]},
+  {id:'major',name:'大醫療',icon:'🏥',hint:'風險來臨會對生活嚴重影響',color:'#FAEEDA',openColor:'#854F0B',
+   items:[
+    {id:'maj-injury',name:'重大傷病',desc:'取得健保重大傷病卡的疾病，22 大項、300 多項，確診即一次性給付。',eg:'例：洗腎、器官移植、癌症等，只要領到重大傷病卡，即可申請理賠。',unit:'萬元',steps:[50,100,150,200,300,500],rec:3},
+    {id:'maj-disease',name:'重大疾病',desc:'7 項重症（心肌梗塞、腦中風、重度癌症等），確診即一次性給付。',eg:'例：突然心肌梗塞住加護病房，一次給付讓你專心治療，不擔心費用。',unit:'萬元',steps:[50,100,150,200,300,500],rec:3},
+    {id:'maj-specific',name:'特定傷病',desc:'比重大疾病定義更廣的嚴重疾病清單，各家保險公司定義不等，一次性給付。',eg:'例：帕金森症、阿茲海默症、紅斑性狼瘡等，確診後即可申請理賠。',unit:'萬元',steps:[50,100,150,200,300,500],rec:3}]},
+  {id:'minor',name:'小醫療',icon:'💊',hint:'住院所需日常花費',color:'#EEEDFE',openColor:'#534AB7',
+   items:[
+    {id:'min-daily',name:'住院日額',desc:'每住院一天，固定補貼一筆零用金，不管住什麼醫院都能領。',eg:'例：盲腸炎住院 5 天，每天補貼 1,500 元，共領 7,500 元，可支付看護或雜支。',unit:'元／天',steps:[500,1000,1500,2000,3000,5000],rec:5},
+    {id:'min-surgery',name:'手術費',desc:'手術花費申請，手術等級越高，理賠可用額度也越多。',eg:'例：腹腔鏡手術或心臟繞道手術，各有對應的理賠倍率，越大的手術賠越多。',unit:'萬元',steps:[5,10,15,20,30,50,100],rec:3},
+    {id:'min-misc',name:'雜費（實支實付）',desc:'住院期間，醫師指示的自費耗材、病房費差額，實際花多少賠多少。',eg:'例：換人工水晶體自費 4 萬元，可向保險公司申請實支實付理賠。',unit:'萬元',steps:[5,10,15,20,30,50,100],rec:3}]},
+  {id:'cancer',name:'癌症險',icon:'🎗️',hint:'從原位癌到重度癌全程',color:'#FAECE7',openColor:'#993C1D',
+   items:[
+    {id:'can-early',name:'原位癌',desc:'最早期的癌症，還沒擴散，治療費用相對低，理賠金額也較小。',eg:'例：子宮頸原位癌、甲狀腺原位癌，確診後申請初期癌症理賠金。',unit:'萬元',steps:[10,20,30,50,100],rec:2},
+    {id:'can-severe',name:'重度癌症',desc:'已惡化或擴散的癌症，理賠金額最高，確診即一次給付大筆錢。',eg:'例：肺癌第三期，確診即給付 200 萬，專心治療不煩惱費用。',unit:'萬元',steps:[50,100,150,200,300,500],rec:3},
+    {id:'can-therapy',name:'癌症療程金',desc:'化療、放療、標靶、免疫療法每次治療都補貼費用，按次數給付。',eg:'例：每次化療補貼 30 萬元，做 12 次療程可領 360 萬元。',unit:'萬元／次',steps:[5,10,20,30,50,100],rec:3}]},
+  {id:'ltc',name:'長期照護金',icon:'🤝',hint:'疾病與意外導致長照的生活保障',color:'#FBEAF0',openColor:'#993556',
+   items:[
+    {id:'ltc-care-lump',name:'長照一次金',desc:'達到長照狀態（無法自理生活）時，一次給付一筆安置費用。',eg:'例：失智症需入住照護機構，先領 100 萬安置費。',unit:'萬元',steps:[50,100,150,200,300],rec:1},
+    {id:'ltc-care-month',name:'長照月扶金',desc:'長照期間每月定期補貼看護費、耗材費，減輕家人照護負擔。',eg:'例：每月補貼 5 萬元，支付看護薪資或居家照護服務費用。',unit:'元／月',steps:[10000,20000,30000,40000,50000,60000],rec:4}]}
+];
+
+let openCat=null,passiveOpen=false,surveyOpen=false;
+const selected=new Set(),expVals={},existVals={},dynRec={};
+
+function syncPill(cb){cb.closest('.check-pill').classList.toggle('active',cb.checked);}
+function getNum(id){return parseFloat((document.getElementById(id)||{}).value)||0;}
+function snapToStep(val,steps){let b=steps[0];steps.forEach(s=>{if(Math.abs(s-val)<Math.abs(b-val))b=s;});return b;}
+
+function calcRec(){
+  const income=getNum('sq-income');
+  const cash=getNum('sq-cash'),stock=getNum('sq-stock'),prop=getNum('sq-property');
+  const lC=getNum('sq-loan-credit'),lH=getNum('sq-loan-house'),lCar=getNum('sq-loan-car'),lO=getNum('sq-loan-other');
+  const liquidAsset=cash+stock; // 流動資產（現金+股票，不含不動產）
+  const totalDebt=lC+lH+lCar+lO;
+  const childNum=parseInt((document.getElementById('sq-child')||{}).value)||0;
+  const monthlyExpense=getNum('sq-monthly-expense'); // 元
+  const region=(document.getElementById('sq-region')||{}).value;
+
+  // ── 壽險：年收入×10 + 負債 - 流動資產 + 子女數×500萬 ──
+  let lifeRec=0;
+  if(income>0||totalDebt>0||childNum>0){
+    lifeRec=Math.max(100, income*10 + totalDebt - liquidAsset + childNum*500);
+    dynRec['life-basic']=snapToStep(lifeRec, CATS[0].items[0].steps);
+  } else delete dynRec['life-basic'];
+
+  // ── 意外身故：壽險建議 - 壽險已有 - 壽險期望 - 意外已有 ──
+  // 已有保障和期望額度在 existVals / expVals 裡，需要即時讀取
+  const lifeExist = existVals['life-basic']||0;
+  const lifeExpIdx = expVals['life-basic'];
+  const lifeExpVal = lifeExpIdx!=null ? CATS[0].items[0].steps[lifeExpIdx] : (dynRec['life-basic']||0);
+  const accDeathExist = existVals['acc-death']||0;
+  if(lifeRec>0){
+    const raw = Math.max(0, lifeRec - lifeExist - lifeExpVal - accDeathExist);
+    dynRec['acc-death'] = snapToStep(Math.max(100, raw), CATS[1].items[0].steps);
+  } else delete dynRec['acc-death'];
+
+  // ── 意外實支：固定 10 萬 ──
+  dynRec['acc-expense']=10;
+
+  // ── 意外住院日額：固定 2,000 元 ──
+  dynRec['acc-hosp']=2000;
+
+  // ── 失能月扶金：月固定開銷（元）── 
+  if(monthlyExpense>0){
+    dynRec['acc-dis-month']=snapToStep(monthlyExpense, CATS[1].items[4].steps);
+  } else delete dynRec['acc-dis-month'];
+
+  // ── 大醫療：固定 200 萬 ──
+  dynRec['maj-injury']=200;
+  dynRec['maj-disease']=200;
+  dynRec['maj-specific']=200;
+
+  // ── 住院日額依地區 ──（移除，改用固定2000）
+  // 保留地區計算供 preview 顯示
+  const dailyMap={north:5000,middle:4000,south:3000};
+
+  // ── 重度癌症：固定 200 萬 ──
+  dynRec['can-severe']=200;
+
+  // ── 療程型癌症：固定 30 萬 ──
+  dynRec['can-therapy']=30;
+
+  if(openCat)renderPanel();
+  renderCats();
+  updateRecPreview(income,totalDebt,liquidAsset,childNum,monthlyExpense,region,lifeRec);
+}
+
+function updateRecPreview(income,debt,liquidAsset,childNum,monthlyExpense,region,lifeRec){
+  const preview=document.getElementById('rec-preview');
+  const rows=document.getElementById('rec-preview-rows');
+  const items=[];
+
+  if(income>0||debt>0||childNum>0){
+    const raw=Math.max(100,income*10+debt-liquidAsset+childNum*500);
+    items.push({
+      name:'壽險建議額度',
+      val:(dynRec['life-basic']||raw)+' 萬元',
+      sub:`年收入 ${income} 萬 × 10 + 負債 ${debt} 萬 − 流動資產 ${liquidAsset} 萬 + 子女 ${childNum} 人 × 500 萬 = ${Math.round(raw)} 萬`
+    });
+  }
+  if(lifeRec>0){
+    const lifeExist=existVals['life-basic']||0;
+    const lifeExpIdx=expVals['life-basic'];
+    const lifeExpVal=lifeExpIdx!=null?CATS[0].items[0].steps[lifeExpIdx]:(dynRec['life-basic']||0);
+    const accDeathExist=existVals['acc-death']||0;
+    const raw=Math.max(0,lifeRec-lifeExist-lifeExpVal-accDeathExist);
+    items.push({
+      name:'意外身故建議額度',
+      val:(dynRec['acc-death']||Math.max(100,raw))+' 萬元',
+      sub:`壽險建議 ${lifeRec} − 壽險已有 ${lifeExist} − 壽險期望 ${lifeExpVal} − 意外已有 ${accDeathExist} = ${Math.round(raw)} 萬`
+    });
+  }
+  if(monthlyExpense>0){
+    items.push({
+      name:'失能月扶金建議額度',
+      val:monthlyExpense.toLocaleString()+' 元／月',
+      sub:'依月固定開銷計算'
+    });
+  }
+  items.push({name:'意外實支建議額度',val:'10 萬元',sub:'固定建議值'});
+  items.push({name:'意外住院日額建議',val:'2,000 元／天',sub:'固定建議值'});
+  items.push({name:'大醫療三項建議',val:'各 200 萬元',sub:'重大傷病 / 重大疾病 / 特定傷病'});
+  items.push({name:'重度癌症建議',val:'200 萬元',sub:'固定建議值'});
+  items.push({name:'癌症療程金建議',val:'30 萬元／次',sub:'固定建議值'});
+
+  if(!items.length){preview.style.display='none';return;}
+  preview.style.display='block';
+  rows.innerHTML=items.map(i=>`<div class="rec-row"><div><div class="rec-name">${i.name}</div>${i.sub?`<div class="rec-sub">${i.sub}</div>`:''}</div><span class="rec-val">${i.val}</span></div>`).join('');
+}
+
+function toggleSurvey(){
+  surveyOpen=!surveyOpen;
+  document.getElementById('survey-body').style.display=surveyOpen?'block':'none';
+  document.getElementById('survey-arrow').style.transform=surveyOpen?'rotate(0deg)':'rotate(-90deg)';
+}
+
+function recVal(item){
+  if(dynRec[item.id]!=null)return snapToStep(dynRec[item.id],item.steps);
+  return item.steps[item.rec];
+}
+function recIdxFn(item){const rv=recVal(item);const i=item.steps.indexOf(rv);return i>=0?i:item.rec;}
+function fmtNum(v,unit){
+  if(unit.includes('元／天')||unit.includes('元／月'))return Number(v).toLocaleString()+' '+unit;
+  return v+' '+unit;
+}
+function pctVsRec(v,item){const b=recVal(item);return b>0?Math.min(100,Math.round(v/b*100)):0;}
+function expIdxFn(id,item){
+  if(expVals[id]!=null)return expVals[id];
+  const rVal=recVal(item);
+  const exVal=existVals[id]||0;
+  const gap=Math.max(0,rVal-exVal);
+  const i=item.steps.reduce((best,s,idx)=>Math.abs(s-gap)<Math.abs(item.steps[best]-gap)?idx:best,0);
+  return i;
+}
+function findItem(id){for(const c of CATS)for(const i of c.items)if(i.id===id)return i;}
+function stopP(e){e.stopPropagation();}
+
+function togglePassive(){
+  passiveOpen=!passiveOpen;
+  document.getElementById('passive-body').className='passive-body'+(passiveOpen?' open':'');
+  document.getElementById('passive-arrow').style.transform=passiveOpen?'rotate(90deg)':'rotate(0deg)';
+  const v=parseInt(document.getElementById('passive-slider').value);
+  document.getElementById('passive-badge').textContent=passiveOpen?'':(v>0?(v*10000).toLocaleString()+' 元／月':'點擊展開');
+}
+function onPassive(val){
+  const v=parseInt(val),a=v*10000;
+  document.getElementById('passive-val').textContent=a.toLocaleString();
+  document.getElementById('passive-fill').style.width=(v/10*100)+'%';
+  if(!passiveOpen)document.getElementById('passive-badge').textContent=v>0?a.toLocaleString()+' 元／月':'點擊展開';
+}
+
+function renderTracks(item){
+  const eIdx=expIdxFn(item.id,item),eVal=item.steps[eIdx],rVal=recVal(item);
+  const exVal=existVals[item.id]||0,max=item.steps.length-1;
+  const exPct=pctVsRec(exVal,item),ePct=pctVsRec(eVal,item),isOver=exVal>rVal;
+  const isDyn=dynRec[item.id]!=null;
+  return `<div class="tracks-block" id="tb-${item.id}">
+    <div class="track-row">
+      <div class="track-label" style="color:#5F5E5A;">已有<br>保障</div>
+      <div class="track-right">
+        <div class="track-top">
+          <div style="display:flex;align-items:center;gap:6px;" onclick="stopP(event)">
+            <input class="exist-input" type="number" min="0" placeholder="0" value="${exVal||''}" id="ex-${item.id}" oninput="onExist('${item.id}',this.value)" onfocus="this.select()"/>
+            <span class="exist-unit">${item.unit}</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:4px;">
+            <span style="font-size:11px;color:#5F5E5A;" id="ex-pct-${item.id}">${exVal?exPct+'%':'-'}</span>
+            <span style="font-size:10px;padding:1px 5px;border-radius:3px;background:#FAEEDA;color:#854F0B;${isOver?'':'display:none'}" id="ex-over-${item.id}">超出</span>
+          </div>
+        </div>
+        <div class="bar-outer"><div class="bar-fill" style="width:${exPct}%;background:#888780;" id="exf-${item.id}"></div></div>
+      </div>
+    </div>
+    <div class="divider-thin"></div>
+    <div class="track-row">
+      <div class="track-label" style="color:#185FA5;">建議<br>額度</div>
+      <div class="track-right">
+        <div class="track-top">
+          <span style="font-size:11px;color:#9ca3af;">${isDyn?'依問卷計算':'基準線（100%）'}</span>
+          <span class="track-val" style="color:#185FA5;">${fmtNum(rVal,item.unit)}</span>
+        </div>
+        <div class="bar-outer"><div class="bar-fill" style="width:100%;background:#185FA5;"></div></div>
+      </div>
+    </div>
+    <div class="track-row" style="margin-top:11px;">
+      <div class="track-label" style="color:#1D9E75;">期望<br>額度</div>
+      <div class="track-right">
+        <div class="track-top">
+          <span style="font-size:11px;color:#9ca3af;">拖拉調整</span>
+          <span class="track-val" style="color:#1D9E75;" id="ev-${item.id}">${fmtNum(eVal,item.unit)}</span>
+          <span id="et-${item.id}" style="font-size:11px;color:#6b7280;margin-left:6px;">${exVal>0?'含已有保障 '+fmtNum(eVal+exVal,item.unit):''}</span>
+        </div>
+        <div class="bar-outer">
+          <div class="bar-fill" style="width:${ePct}%;background:#9FE1CB;" id="ef-${item.id}"></div>
+          <input type="range" class="sl sl-exp" min="0" max="${max}" step="1" value="${eIdx}" onclick="stopP(event)" oninput="onExp('${item.id}',this.value)">
+        </div>
+      </div>
+    </div>
+  </div>`;
+}
+
+function onExist(id,v){
+  const item=findItem(id),num=parseFloat(v)||0;existVals[id]=num;
+  const pct=pctVsRec(num,item);
+  const fEl=document.getElementById('exf-'+id),pEl=document.getElementById('ex-pct-'+id),oEl=document.getElementById('ex-over-'+id);
+  if(fEl)fEl.style.width=pct+'%';
+  if(pEl)pEl.textContent=num?pct+'%':'-';
+  if(oEl)oEl.style.display=num>recVal(item)?'inline':'none';
+  // 同步更新期望總額顯示
+  const tEl=document.getElementById('et-'+id),vEl=document.getElementById('ev-'+id);
+  if(tEl&&vEl){
+    const eIdx=expVals[id]!=null?expVals[id]:expIdxFn(id,item);
+    const eVal=item.steps[eIdx]||0;
+    tEl.textContent=num>0?'含已有保障 '+fmtNum(eVal+num,item.unit):'';
+  }
+}
+function onExp(id,val){
+  const item=findItem(id),idx=parseInt(val);expVals[id]=idx;
+  const v=item.steps[idx],pct=pctVsRec(v,item);
+  const vEl=document.getElementById('ev-'+id),fEl=document.getElementById('ef-'+id),tEl=document.getElementById('et-'+id);
+  if(vEl)vEl.textContent=fmtNum(v,item.unit);
+  if(fEl)fEl.style.width=pct+'%';
+  const exVal=existVals[id]||0;
+  if(tEl)tEl.textContent=exVal>0?'含已有保障 '+fmtNum(v+exVal,item.unit):'';
+}
+
+function renderCats(){
+  document.getElementById('cats').innerHTML=CATS.map(c=>{
+    const cnt=c.items.filter(i=>selected.has(i.id)).length,isOpen=openCat===c.id;
+    return `<div class="cat-card" onclick="toggleCat('${c.id}')"
+      style="border-color:${isOpen?c.openColor:'var(--border)'};border-width:${isOpen?'1.5px':'0.5px'};background:${isOpen?c.color:'var(--bg)'}">
+      <span class="cat-icon">${c.icon}</span>
+      <div class="cat-name">${c.name}</div>
+      <div class="cat-hint">${c.hint}</div>
+      ${cnt>0?`<span class="cat-badge" style="background:${c.color};color:${c.openColor}">已選 ${cnt} 項</span>`
+             :`<span class="cat-badge" style="background:var(--bg2);color:var(--text3)">點擊展開</span>`}
+    </div>`;
+  }).join('');
+}
+
+function renderPanel(){
+  const area=document.getElementById('panel-area');
+  if(!openCat){area.innerHTML='';return;}
+  const c=CATS.find(x=>x.id===openCat);
+  area.innerHTML=`<div class="panel">
+    <div class="panel-header">
+      <span style="font-size:20px;">${c.icon}</span>
+      <span class="panel-title">${c.name}</span>
+      <span class="panel-close" onclick="toggleCat('${c.id}')">×</span>
+    </div>
+    <div class="items">
+      ${c.items.map(item=>`
+        <div class="item${selected.has(item.id)?' sel':''}" id="item-${item.id}" onclick="toggleItem(event,'${item.id}')">
+          <div class="item-top">
+            <div class="item-check"><div class="ck"></div></div>
+            <div style="flex:1;min-width:0;">
+              <div class="item-name">${item.name}</div>
+              <div class="item-desc">${item.desc}</div>
+              <div class="item-eg">${item.eg}</div>
+            </div>
+          </div>
+          ${renderTracks(item)}
+        </div>`).join('')}
+    </div>
+    <div class="note-row">
+      <label>備註（選填）</label>
+      <textarea id="note-${c.id}" placeholder="補充說明..."></textarea>
+    </div>
+  </div>`;
+}
+
+function toggleCat(id){openCat=openCat===id?null:id;renderCats();renderPanel();}
+function toggleItem(e,id){
+  if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA')return;
+  if(selected.has(id))selected.delete(id);else selected.add(id);
+  document.getElementById('cnt').textContent=selected.size;
+  const el=document.getElementById('item-'+id);if(el)el.classList.toggle('sel');
+  renderCats();
+}
+
+function loadFromURL(){
+  const params=new URLSearchParams(window.location.search);
+  if(!params.has('_shared'))return;
+  document.getElementById('client-banner').classList.add('show');
+  ['name','gender','birth','line','phone','email'].forEach(k=>{
+    const v=params.get(k);const el=document.getElementById('f-'+k);
+    if(v&&el)el.value=decodeURIComponent(v);
+  });
+  CATS.forEach(c=>c.items.forEach(item=>{
+    const v=params.get('ex_'+item.id);
+    if(v!=null&&v!==''){existVals[item.id]=parseFloat(v)||0;if(existVals[item.id]>0)selected.add(item.id);}
+  }));
+  const pv=params.get('passive');
+  if(pv){const val=parseInt(pv)||0;document.getElementById('passive-slider').value=val;document.getElementById('passive-val').textContent=(val*10000).toLocaleString();document.getElementById('passive-fill').style.width=(val/10*100)+'%';}
+  document.getElementById('cnt').textContent=selected.size;
+}
+
+function generateLink(){
+  const params=new URLSearchParams();params.set('_shared','1');
+  ['name','gender','birth','line','phone','email'].forEach(k=>{
+    const v=(document.getElementById('f-'+k)||{}).value||'';
+    if(v)params.set(k,encodeURIComponent(v));
+  });
+  CATS.forEach(c=>c.items.forEach(item=>{
+    const el=document.getElementById('ex-'+item.id);
+    const v=el?el.value:(existVals[item.id]||'');
+    if(v&&parseFloat(v)>0)params.set('ex_'+item.id,v);
+  }));
+  const pv=document.getElementById('passive-slider').value;
+  if(parseInt(pv)>0)params.set('passive',pv);
+  const base=window.location.href.split('?')[0];
+  const url=base+'?'+params.toString();
+  document.getElementById('share-card').style.display='block';
+  document.getElementById('share-url-text').textContent=url;
+  document.getElementById('share-url-text').scrollIntoView({behavior:'smooth',block:'nearest'});
+  showToast('連結已產生，請複製後傳給客戶');
+}
+
+function copyLink(){
+  const url=document.getElementById('share-url-text').textContent;
+  navigator.clipboard.writeText(url).then(()=>{
+    const btn=document.getElementById('btn-copy');
+    btn.textContent='已複製 ✓';btn.classList.add('copied');
+    setTimeout(()=>{btn.textContent='複製';btn.classList.remove('copied');},2000);
+  }).catch(()=>showToast('請手動選取連結複製'));
+}
+
+function clearAll(){
+  selected.clear();openCat=null;passiveOpen=false;
+  Object.keys(expVals).forEach(k=>delete expVals[k]);
+  Object.keys(existVals).forEach(k=>delete existVals[k]);
+  Object.keys(dynRec).forEach(k=>delete dynRec[k]);
+  document.querySelectorAll('input[type=text],input[type=tel],input[type=email],input[type=date],input[type=number],textarea').forEach(el=>el.value='');
+  document.querySelectorAll('select').forEach(el=>el.selectedIndex=0);
+  document.querySelectorAll('input[type=checkbox]').forEach(el=>{el.checked=false;el.closest('.check-pill').classList.remove('active');});
+  document.getElementById('passive-slider').value=0;
+  document.getElementById('passive-val').textContent='0';
+  document.getElementById('passive-fill').style.width='0%';
+  document.getElementById('passive-body').className='passive-body';
+  document.getElementById('passive-badge').textContent='點擊展開';
+  document.getElementById('passive-arrow').style.transform='rotate(0deg)';
+  document.getElementById('cnt').textContent='0';
+  document.getElementById('share-card').style.display='none';
+  document.getElementById('rec-preview').style.display='none';
+  renderCats();renderPanel();showToast('已清除所有選項');
+}
+
+function showToast(msg){
+  const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');
+  setTimeout(()=>t.classList.remove('show'),2400);
+}
+
+async function exportPDF(){
+  const name=document.getElementById('f-name').value||'（未填）';
+  const gender=document.getElementById('f-gender').value||'（未填）';
+  const birth=document.getElementById('f-birth').value||'（未填）';
+  const lineId=document.getElementById('f-line').value||'（未填）';
+  const phone=document.getElementById('f-phone').value||'（未填）';
+  const email=document.getElementById('f-email').value||'（未填）';
+  const genNote=document.getElementById('note-general').value;
+  const passiveAmount=parseInt(document.getElementById('passive-slider').value)*10000;
+  const passiveNote=document.getElementById('passive-note').value;
+  const today=new Date().toLocaleDateString('zh-TW',{year:'numeric',month:'long',day:'numeric'});
+  const marry=document.getElementById('sq-marry').value;
+  const child=document.getElementById('sq-child').value;
+  const regionMap={north:'北部',middle:'中部',south:'南部'};
+  const region=regionMap[document.getElementById('sq-region').value]||'—';
+  const income=getNum('sq-income');
+  const totalAsset=getNum('sq-cash')+getNum('sq-stock')+getNum('sq-property');
+  const totalDebt=getNum('sq-loan-credit')+getNum('sq-loan-house')+getNum('sq-loan-car')+getNum('sq-loan-other');
+
+  let sectionsHTML='';
+  CATS.forEach(c=>{
+    const items=c.items.filter(i=>selected.has(i.id));
+    const noteEl=document.getElementById('note-'+c.id),note=noteEl?noteEl.value:'';
+    const hasItems=items.length>0;
+    const itemsHTML=hasItems?items.map(item=>{
+      const eIdx2=expVals[item.id]!=null?expVals[item.id]:recIdxFn(item);
+      const eVal=item.steps[eIdx2],rVal=recVal(item),exVal=existVals[item.id]||0;
+      const exPct=pctVsRec(exVal,item),ePct=pctVsRec(eVal,item),isOver=exVal>rVal;
+      return `<div style="padding:10px 12px;border:1px solid #BFDBFE;border-radius:8px;background:#EFF6FF;margin-bottom:8px;page-break-inside:avoid;"><div style="font-size:13px;font-weight:bold;color:#1D4ED8;margin-bottom:4px;">${item.name}</div><div style="font-size:11px;color:#374151;margin-bottom:10px;">${item.desc}</div><div style="margin-bottom:7px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#5F5E5A;">已有保障${isOver?' ▲超出建議':''}</span><span style="font-size:12px;color:#444441;font-weight:bold;">${exVal?fmtNum(exVal,item.unit):'尚無'}</span></div><div style="height:5px;border-radius:3px;background:#D3D1C7;"><div style="width:${exPct}%;height:5px;border-radius:3px;background:#888780;"></div></div></div><div style="margin-bottom:7px;"><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#185FA5;">建議額度</span><span style="font-size:12px;color:#185FA5;font-weight:bold;">${fmtNum(rVal,item.unit)}</span></div><div style="height:5px;border-radius:3px;background:#B5D4F4;"><div style="width:100%;height:5px;border-radius:3px;background:#185FA5;"></div></div></div><div><div style="display:flex;justify-content:space-between;margin-bottom:3px;"><span style="font-size:11px;color:#1D9E75;">期望額度</span><span style="font-size:12px;color:#1D9E75;font-weight:bold;">${fmtNum(eVal,item.unit)}</span></div><div style="height:5px;border-radius:3px;background:#9FE1CB;"><div style="width:${ePct}%;height:5px;border-radius:3px;background:#1D9E75;"></div></div></div></div>`;
+    }).join(''):'<div style="font-size:12px;color:#9CA3AF;padding:4px 0;">未選取任何項目</div>';
+    sectionsHTML+=`<div style="margin-bottom:16px;padding:14px;border:1px solid ${hasItems?'#BFDBFE':'#E5E7EB'};border-radius:10px;background:${hasItems?'#F0F9FF':'#F9FAFB'};page-break-inside:avoid;"><div style="display:flex;align-items:center;gap:8px;margin-bottom:10px;"><span style="font-size:18px;">${c.icon}</span><span style="font-size:15px;font-weight:bold;color:#1E3A5F;">${c.name}</span>${hasItems?`<span style="margin-left:auto;font-size:11px;background:#DBEAFE;color:#1D4ED8;padding:2px 8px;border-radius:999px;">已選 ${items.length} 項</span>`:''}</div>${itemsHTML}${note?`<div style="margin-top:8px;font-size:12px;color:#6B7280;border-top:1px solid #E5E7EB;padding-top:6px;">備註：${note}</div>`:''}</div>`;
+  });
+
+  const passivePct=Math.round(passiveAmount/100000*100);
+  const fullHTML=`<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>保險需求調查表_${name}</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'Microsoft JhengHei','PingFang TC','Noto Sans TC',sans-serif;background:#fff;color:#111827;padding:20px;}
+@media print{body{padding:0;}.no-print{display:none!important;}@page{size:A4;margin:15mm;}}
+.print-btn{position:fixed;top:20px;right:20px;padding:12px 24px;background:#185FA5;color:#fff;border:none;border-radius:8px;font-size:14px;font-weight:bold;cursor:pointer;box-shadow:0 4px 12px rgba(0,0,0,0.15);z-index:9999;font-family:inherit;}
+.print-btn:hover{background:#0C447C;}
+.hint{position:fixed;top:20px;left:20px;background:#FEF3C7;color:#92400E;padding:12px 18px;border-radius:8px;font-size:13px;z-index:9999;border:1px solid #FCD34D;max-width:400px;line-height:1.6;}
+</style>
+</head>
+<body>
+<button class="print-btn no-print" onclick="window.print()">🖨️ 列印 / 另存 PDF</button>
+<div class="hint no-print">💡 點右上角「列印 / 另存 PDF」按鈕，<br>在列印視窗裡選擇<b>「另存為 PDF」</b>即可下載</div>
+<div style="max-width:780px;margin:0 auto;padding:32px;">
+  <div style="display:flex;justify-content:space-between;margin-bottom:20px;padding-bottom:14px;border-bottom:2px solid #1E3A5F;">
+    <div>
+      <div style="font-size:10px;letter-spacing:2px;color:#6B7280;margin-bottom:3px;">INSURANCE NEEDS ASSESSMENT</div>
+      <div style="font-size:22px;font-weight:bold;color:#1E3A5F;">保險需求調查表</div>
+    </div>
+    <div style="font-size:12px;color:#6B7280;">${today}</div>
+  </div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;padding:14px;background:#F0F9FF;border-radius:10px;border:1px solid #BAE6FD;">
+    <div><div style="font-size:10px;color:#6B7280;margin-bottom:2px;">姓名</div><div style="font-size:14px;font-weight:bold;color:#1E3A5F;">${name}</div></div>
+    <div><div style="font-size:10px;color:#6B7280;margin-bottom:2px;">性別</div><div style="font-size:14px;font-weight:bold;color:#1E3A5F;">${gender}</div></div>
+    <div><div style="font-size:10px;color:#6B7280;margin-bottom:2px;">出生年月日</div><div style="font-size:14px;font-weight:bold;color:#1E3A5F;">${birth}</div></div>
+    <div><div style="font-size:10px;color:#6B7280;margin-bottom:2px;">Line ID</div><div style="font-size:14px;font-weight:bold;color:#1E3A5F;">${lineId}</div></div>
+    <div><div style="font-size:10px;color:#6B7280;margin-bottom:2px;">聯絡電話</div><div style="font-size:14px;font-weight:bold;color:#1E3A5F;">${phone}</div></div>
+    <div><div style="font-size:10px;color:#6B7280;margin-bottom:2px;">電子郵件</div><div style="font-size:14px;font-weight:bold;color:#1E3A5F;">${email}</div></div>
+  </div>
+  <div style="padding:12px 14px;border:1px solid #E5E7EB;border-radius:10px;margin-bottom:16px;background:#F9FAFB;">
+    <div style="font-size:13px;font-weight:bold;color:#1E3A5F;margin-bottom:8px;">📋 需求評估摘要</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;font-size:12px;">
+      <div><span style="color:#6B7280;">婚姻：</span><span>${marry||'—'}</span></div>
+      <div><span style="color:#6B7280;">子女：</span><span>${child?child+' 位':'—'}</span></div>
+      <div><span style="color:#6B7280;">個人年所得：</span><span>${income?income+' 萬':'—'}</span></div>
+      <div><span style="color:#6B7280;">居住地區：</span><span>${region}</span></div>
+      <div><span style="color:#6B7280;">資產合計：</span><span>${totalAsset?totalAsset+' 萬':'—'}</span></div>
+      <div><span style="color:#6B7280;">負債合計：</span><span>${totalDebt?totalDebt+' 萬':'—'}</span></div>
+    </div>
+  </div>
+  <div style="font-size:15px;font-weight:bold;color:#1E3A5F;margin-bottom:14px;">保障需求（共選取 ${selected.size} 項）</div>
+  ${sectionsHTML}
+  <div style="margin-bottom:16px;padding:14px;border:1px solid #9FE1CB;border-radius:10px;background:#F0FDF4;page-break-inside:avoid;">
+    <div style="display:flex;align-items:center;gap:8px;margin-bottom:8px;"><span style="font-size:18px;">💰</span><span style="font-size:15px;font-weight:bold;color:#0F6E56;">期許被動收入</span></div>
+    <div style="font-size:12px;color:#374151;margin-bottom:10px;">讓生活越過越輕鬆，無論風雨都有一筆安心錢</div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span style="font-size:12px;color:#1D9E75;">每月期望金額</span><span style="font-size:14px;color:#1D9E75;font-weight:bold;">${passiveAmount>0?passiveAmount.toLocaleString()+' 元／月':'尚未設定'}</span></div>
+    <div style="height:8px;border-radius:4px;background:#9FE1CB;"><div style="width:${passivePct}%;height:8px;border-radius:4px;background:#1D9E75;"></div></div>
+    <div style="display:flex;justify-content:space-between;margin-top:3px;font-size:10px;color:#6B7280;"><span>0</span><span>5萬</span><span>10萬</span></div>
+    ${passiveNote?`<div style="margin-top:8px;font-size:12px;color:#6B7280;border-top:1px solid #9FE1CB;padding-top:6px;">備註：${passiveNote}</div>`:''}
+  </div>
+  ${genNote?`<div style="padding:14px;border:1px solid #E5E7EB;border-radius:10px;margin-bottom:16px;"><div style="font-size:13px;font-weight:bold;color:#1E3A5F;margin-bottom:6px;">整體備註與預算</div><div style="font-size:13px;color:#374151;">${genNote}</div></div>`:''}
+  <div style="margin-top:28px;padding-top:14px;border-top:1px solid #E5E7EB;display:flex;justify-content:space-between;align-items:flex-end;">
+    <div style="font-size:10px;color:#9CA3AF;">本表僅供保障規劃參考，保單條款以實際核保結果為準。</div>
+    <div style="text-align:center;"><div style="width:110px;border-top:1px solid #374151;padding-top:4px;font-size:11px;color:#6B7280;">客戶簽名</div></div>
+  </div>
+</div>
+</body>
+</html>`;
+
+  const newWin=window.open('','_blank');
+  if(!newWin){showToast('請允許彈出視窗');return;}
+  newWin.document.open();
+  newWin.document.write(fullHTML);
+  newWin.document.close();
+  showToast('已開啟 PDF 預覽頁面');
+}
+
+loadFromURL();
+renderCats();
+</script>
+</body>
+</html>
